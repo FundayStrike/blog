@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Funday's Blog</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="../../styles.css"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200..800&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="header">
+            <div class="blog-title">
+                <h1>Funday's Blog</h1>
+                <h4>random ctf and programming writeups (wip)</h4>
+            </div>
+            <div class="links">
+                <a class="header-link" href="../../ctfwriteups.html">CTF Writeups</a>
+                <a class="header-link">My Other Socials</a>
+            </div>
+        </div>
+        <div class="writeup-content">
+            <div class="ctf-tag">YBN CTF 2024</div>
+            <div class="ctf-tag">Misc</div>
+            <h3>I Lost My Weights</h3>
+            <img class="chall-img" src="../../images/YBN 2024 CTF/ybnctf2024_1.png" alt="challenge description"/>
+            <p class="writeup-text">
+                This is a AI challenge :O<br/><br/>
+
+                First step of any AI challenge is to know the format of our data set. Looking at the data set, the data in 
+                train_x and test_x are stored as a float, while the data in train_y are stored as an integer of either 0 or 1.
+                This suggests that this is a binary classification problem, and a classifier is more appropriate to solve this problem
+                rather than a regressor.<br/><br/>
+
+                Using scikit-learn in Python, the training data set can be split (aka. train_x and train_y) into 70-30. 70% of
+                the training data would be used to train the model while 30% would be used to evaluate the model (determine how
+                good the model is).<br/><br/>
+            </p>
+            <pre><code>
+    from sklearn.model_selection import train_test_split
+
+    X_train, X_test, y_train, y_test = train_test_split(train_x, train_y, test_size=0.3, random_state=42)
+            </code></pre><br/>
+
+            <p class="writeup-text">
+                There are a lot of classifiers that can be used to solve the problem (or you can implement your own neural net if you want a challenge). I personally went with Random Forest Classifier, which gave a R-squared score of 0.96333. Predicting test_y
+                based on test_x, the resultant array also consists of a series of 1s and 0s (who would have guessed :O). Given that this is still a 
+                CTF challenge, the flag is probably masked under the test_y prediction. By converting test_y into a binary string, and converting to
+                text, the flag is obtained. 
+            </p><br>
+            <pre><code>
+    from sklearn.ensemble import RandomForestClassifier
+
+    # train and evaluate model
+    model = RandomForestClassifier()
+    model.fit(X_train, y_train)
+    print(model.score(X_test, y_test))
+
+    # predict test_y based on test_x and convert to binary string
+    test_y = model.predict(test_x)
+    test_y = map(str, test_y)
+    binary_string = ''.join(test_y)
+
+    # convert from binary string to text
+    for i in range(0, len(binary_string), 8):
+        print(chr(int(binary_string[i: i+8], 2)), end='')
+            </code></pre><br/>
+            <p class="writeup-text"><b>Flag: </b>YBN24{un1v3r5al_4ppr0x1m4t10n_th30r3m}</p><br/>
+            <p class="writeup-text" style="float: right;">Last Edited: 1/12/2024</p>
+        </div>
+    </body>
+</html>

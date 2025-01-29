@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Funday's Blog</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="../../styles.css"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200..800&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="header">
+            <div class="blog-title">
+                <h1>Funday's Blog</h1>
+                <h4>random ctf and programming writeups (wip)</h4>
+            </div>
+            <div class="links">
+                <a class="header-link" href="../../ctfwriteups.html">CTF Writeups</a>
+                <a class="header-link">My Other Socials</a>
+            </div>
+        </div>
+        <div class="writeup-content">
+            <div class="ctf-tag">YBN CTF 2024</div>
+            <div class="ctf-tag">Rev</div>
+            <h3>sekurity</h3>
+            <img class="chall-img" src="../../images/YBN 2024 CTF/ybnctf2024_3.png" alt="challenge description"/>
+            <h3>Decompiled code (Hex-rays):</h3>
+            <pre><code>
+    int __cdecl main(int argc, const char **argv, const char **envp)
+    {
+        size_t v3; // rax
+        unsigned __int64 v4; // rbx
+        char s[104]; // [rsp+0h] [rbp-D0h] BYREF
+        char v7[8]; // [rsp+68h] [rbp-68h] BYREF
+        char s1[54]; // [rsp+70h] [rbp-60h] BYREF
+        unsigned __int8 v9; // [rsp+A6h] [rbp-2Ah]
+        char v10; // [rsp+A7h] [rbp-29h]
+        size_t v11; // [rsp+A8h] [rbp-28h]
+        size_t v12; // [rsp+B0h] [rbp-20h]
+        unsigned __int64 i; // [rsp+B8h] [rbp-18h]
+
+        strcpy(s1, "Y1ta4c4rkN2uxs3Bhr1{n_tu_0uyg_mr_dnh4n1}0_1");
+        strcpy(v7, "}nb!{y?");
+        puts("Really High Security Vault 100,000.");
+        printf("Please enter the passcode: ");
+        __isoc99_scanf("%99s", s);
+        v12 = strlen(s);
+        v11 = strlen(s1);
+        if ( v12 == v11 )
+        {
+            for ( i = 0LL; i < v11; ++i )
+            {
+            v3 = strlen(v7);
+            v10 = v7[i % v3];
+            v4 = v10;
+            v9 = v4 % strlen(s1);
+            if ( (i & 3) != 0 )
+                swap(s, i, v9);
+            }
+            if ( !strcmp(s1, s) )
+            {
+            puts("Correct passcode! Welcome!");
+            exit(0);
+            }
+        }
+        puts("Wrong passcode! Exiting!");
+        return 0;
+    }
+            </code></pre><br/>
+            <p class="writeup-text">
+                From the code it seems that the flag is being scrambled through a series of swaps. By keeping track the pair of
+                indices that are being swapped around, the process can be reversed by reversing the array containing the swapped indices
+                and running through the swaps on the reversed array, obtaining the flag for this challenge. 
+            </p><br/>
+            <h3>Solve script (in Python):</h3>
+            <pre><code>
+    swaps = []
+    s1 = "Y1ta4c4rkN2uxs3Bhr1{n_tu_0uyg_mr_dnh4n1}0_1"
+    s1 = list(s1)
+    v7 = "}nb!{y?"
+    v11 = len(s1) # 43
+    for i in range(v11):
+        v3 = len(v7) # 7
+        v10 = v7[i % v3]
+        v4 = ord(v10)
+        v9 = v4 % len(s1) # len(s1) = 43
+        if i % 4 != 0: # same as (i & 3) != 0
+            swaps.append([i, v9])
+
+    # reverse all the swaps
+    for swap in swaps[::-1]:
+        s1[swap[0]], s1[swap[1]] = s1[swap[1]], s1[swap[0]]
+    s1 = ''.join(s1)
+    print(s1) # flag
+            </code></pre><br/>
+            <p class="writeup-text"><b>Flag: </b>YBN24{s3kur1ty_thr0u4h_m1x1ng_1n_a_c4udr0n}</p><br/>
+            <p class="writeup-text" style="float: right;">Last Edited: 3/12/2024</p>
+        </div>
+    </body>
+</html>
