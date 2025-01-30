@@ -218,6 +218,10 @@ pre{
         font-size: 12px;
     }
 
+    .dropdown-content a{
+        padding: 12px 5px;
+    }
+
     .ctf-navbar{
         display: none;
     }
